@@ -16,9 +16,36 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+#We don't have to write all the password-checking and JWT-generation logic ourselves.
+from rest_framework_simplejwt.views import  (TokenObtainPairView, TokenRefreshView) 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('api.urls')),
+    #/api/token/
+     #↓
+    #TokenObtainPairViews
+    # ↓
+    #check username + password
+    # ↓
+    #if correct
+    # ↓
+    #generate JWT
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), #Access tokens are intentionally short-lived.
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), #Refresh token Used to get a new access token when the access token expires.
 
 ]
+
+
+'''JWT Authentication Flow:
+LOGIN
+  ↓
+access token + refresh token
+  ↓
+use access token
+  ↓
+access token expires
+  ↓
+send refresh token
+  ↓
+get new access token'''

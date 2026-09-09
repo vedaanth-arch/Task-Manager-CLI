@@ -87,6 +87,11 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = { #"For every API request, use JWT to figure out who the user is."
+    "DEFAULT_AUTHENTICATION_CLASSES":(
+        "rest_framework_simplejwt.authentication.JWTAuthentication", #This tells DRF:"When an API request contains a JWT, use it to identify the user."
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
