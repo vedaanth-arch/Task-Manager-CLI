@@ -6,6 +6,12 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+
+@require_GET
+def health(request):
+    return JsonResponse({"status": "ok"})
 
 @api_view(["GET","POST"])
 @permission_classes([IsAuthenticated]) #→ Only allow authenticated users to access this view.
@@ -140,5 +146,4 @@ def register(request):
         return Response({
             "message":"User Created Successfully"},
             status=status.HTTP_201_CREATED)
-
 
