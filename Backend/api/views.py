@@ -44,7 +44,7 @@ def task_list(request):
             status=status.HTTP_400_BAD_REQUEST
             ) #→ If the data is invalid, return the
 
-@api_view(["GET","PUT","DELETE"])
+@api_view(["GET","PATCH","DELETE"])
 @permission_classes([IsAuthenticated]) #→ Only allow authenticated users to access this view.
 def task_detail(request,id):
     try:
@@ -70,15 +70,37 @@ def task_detail(request,id):
         except Task.DoesNotExist:
             return Response({"error":"Task not found"},status=status.HTTP_404_NOT_FOUND) #→ If the Task with the given id does not exist, return a 404 Not Found response with an error message.
 
+    if request.method == "PATCH":
+        try:
+            task = Task.objects.get(
+                id=id,
+            owner=request.user
+        )
+        except Task.DoesNotExist:
+            return Response(
+            {"error": "Task not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
-    if request.method=="PUT":
-        task=Task.objects.get(id=id,owner=request.user) #→ Get the Task object with the given id from the database.
-        serializer=TaskSerializer(task,data=request.data) #→ Give the existing Task object and the new data to the serializer.
+        serializer = TaskSerializer(
+        task,
+        data=request.data,
+        partial=True
+    )
+
         if serializer.is_valid():
-            serializer.save() #→ Save the new Task to the database.
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) #→ If the data is invalid, return the
+            serializer.save()
 
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+
+        return Response(
+            serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
+    )
+    
     if request.method=="DELETE":
         try:
             task=Task.objects.get(id=id,owner=request.user) #→ Get the Task object with the given id from the database.

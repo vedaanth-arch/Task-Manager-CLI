@@ -21,19 +21,25 @@ from rest_framework_simplejwt.views import  (TokenObtainPairView, TokenRefreshVi
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/',include('api.urls')),
-    #/api/token/
-     #↓
-    #TokenObtainPairViews
-    # ↓
-    #check username + password
-    # ↓
-    #if correct
-    # ↓
-    #generate JWT
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), #Access tokens are intentionally short-lived.
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), #Refresh token Used to get a new access token when the access token expires.
-
+    
+    # User.objects.filter(username=username).exists() 
+    path('api/', include('api.urls')), 
+    
+    #/api/token/ 
+    #↓ 
+    #TokenObtainPairViews 
+    # ↓ 
+    #check username + password 
+    # ↓ 
+    #if correct 
+    # ↓ 
+    #generate JWT 
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
+    
+    #Access tokens are intentionally short-lived. 
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    #Refresh token Used to get a new access token when the access token expires. 
 ]
 
 
@@ -49,3 +55,16 @@ access token expires
 send refresh token
   ↓
 get new access token'''
+
+'''FLOW of writing django JWT
+1. Install SimpleJWT
+        ↓
+2. settings.py
+   Tell DRF to use JWT authentication
+        ↓
+3. core/urls.py
+   Add JWT endpoints
+        ↓
+4. Test /api/token/
+        ↓
+5. JWT authentication is working'''
